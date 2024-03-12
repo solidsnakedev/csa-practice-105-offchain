@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
     "build": "tsc"
   },
   "keywords": [],
@@ -13,7 +13,9 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^20.11.24",
-    "typescript": "^5.3.3"
+    "tsx": "^4.7.1",
+    "typescript": "^5.3.3",
+    "vitest": "0.34.6"
   },
   "dependencies": {
     "@anastasia-labs/lucid-cardano-fork": "^0.10.7"
