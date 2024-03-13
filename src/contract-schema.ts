@@ -1,11 +1,6 @@
 import {
-  Address,
   Data,
-  getAddressDetails,
 } from "@anastasia-labs/lucid-cardano-fork";
-// data PMarketRedeemer (s :: S)
-//   = PBuy (Term s (PDataRecord '[]))
-//   | PWithdraw (Term s (PDataRecord '[]))
 
 // data PSimpleSale (s :: S)
 //   = PSimpleSale
@@ -54,33 +49,6 @@ export const AddressSchema = Data.Object({
 export type AddressD = Data.Static<typeof AddressSchema>;
 export const AddressD = AddressSchema as unknown as AddressD;
 
-export function fromAddress(address: Address): AddressD {
-  // We do not support pointer addresses!
-
-  const { paymentCredential, stakeCredential } = getAddressDetails(address);
-
-  if (!paymentCredential) throw new Error("Not a valid payment address.");
-
-  return {
-    paymentCredential:
-      paymentCredential?.type === "Key"
-        ? {
-            PublicKeyCredential: [paymentCredential.hash],
-          }
-        : { ScriptCredential: [paymentCredential.hash] },
-    stakeCredential: stakeCredential
-      ? {
-          Inline: [
-            stakeCredential.type === "Key"
-              ? {
-                  PublicKeyCredential: [stakeCredential.hash],
-                }
-              : { ScriptCredential: [stakeCredential.hash] },
-          ],
-        }
-      : null,
-  };
-}
 
 const SimpleSaleSchema = Data.Object({
   sellerAddress: AddressSchema,
@@ -88,3 +56,27 @@ const SimpleSaleSchema = Data.Object({
 });
 export type SimpleSale = Data.Static<typeof SimpleSaleSchema>;
 export const SimpleSale = SimpleSaleSchema as unknown as SimpleSale;
+
+
+// data PMarketRedeemer (s :: S)
+//   = PBuy (Term s (PDataRecord '[...]))
+//   | PWithdraw (Term s (PDataRecord '[...]))
+
+// const MarketRedeemerSchema = Data.Enum([
+//   Data.Object({
+//     Buy: Data.Nullable(Data.Bytes())
+//   }),
+//   Data.Object({
+//     Withdraw: Data.Nullable(Data.Bytes()),
+//   }),
+// ]);
+
+// export type MarketRedeemerSchema = Data.Static<typeof MarketRedeemerSchema>
+
+const MarketRedeemerSchema = Data.Enum([ 
+  Data.Literal("PBuy"),
+  Data.Literal("PWithdraw")
+ ])
+
+export type MarketRedeemer= Data.Static<typeof MarketRedeemerSchema>
+export const MarketRedeemer= MarketRedeemerSchema as unknown as MarketRedeemer
