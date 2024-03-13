@@ -1,5 +1,6 @@
 // sum.test.js
-import { expect, test } from "vitest";
+import { describe, it, expect, test } from "vitest";
+import fc from "fast-check";
 import { sum } from "../src/sum.js";
 import {
   Assets,
@@ -13,6 +14,7 @@ import {
 import { MarketRedeemer, SimpleSale } from "../src/contract-schema.js";
 import { fromAddress, toAddress } from "../src/utils.js";
 import script from "./marketplace.json";
+import { Constr } from "@anastasia-labs/lucid-cardano-fork";
 
 test("adds 1 + 2 to equal 3", () => {
   expect(sum(1, 2)).toBe(3);
@@ -71,6 +73,14 @@ test("Alice sells NFT, Bob buys NFT", async () => {
     SimpleSale
   );
   console.log("SimpleSale datum as cbor", datum);
+  // const mydatum = new Constr (0, [
+  //   Constr 0 [ "pukhash"],
+  //   Constr 0 [
+  //     Constro 0 [
+  //       "stakehash"
+  //     ]
+  //   ]
+  // ]
   //   121_0([_
   //     121_0([_ -> address
   //         121_0([_
@@ -146,7 +156,7 @@ test("Alice sells NFT, Bob buys NFT", async () => {
   //   - pay to Alice
   //   - attach market contract, attach the redeemer "PBuy"
 
-  const txSell = await lucid.newTx().payToContract().complete();
+  // const txSell = await lucid.newTx().payToContract().complete();
 
   // sign .. submit .. awaitblock
 
@@ -154,7 +164,7 @@ test("Alice sells NFT, Bob buys NFT", async () => {
   // pick one element
   // lucid.utxosAt()
 
-  const txBuy = await lucid.newTx().collectFrom().payToAddress().complete();
+  // const txBuy = await lucid.newTx().collectFrom().payToAddress().complete();
 
   const marketplace: Script = {
     type: "PlutusV2",
@@ -169,4 +179,35 @@ test("Alice sell, Alice Withdraw", () => {
   // users with assets
   // tx to sell
   // tx to withdraw
+});
+
+test("property test", () => {
+  // console.log(fc.bigIntN(2));
+  console.log(fc.bigInt())
+});
+
+// Code under test
+const contains = (text, pattern) => text.indexOf(pattern) >= 0;
+
+// Properties
+describe('properties', () => {
+  // string text always contains itself
+  it('should always contain itself', () => {
+    fc.assert(
+      fc.property(fc.string(), (text) => {
+        return contains(text, text);
+      }),
+    );
+  });
+
+  // string a + b + c always contains b, whatever the values of a, b and c
+  it('should always contain its substrings', () => {
+    fc.assert(
+      fc.property(fc.string(), fc.string(), fc.string(), (a, b, c) => {
+        console.log(a, " - ",b," - ",c)
+        // Alternatively: no return statement and direct usage of expect or assert
+        return contains(a + b + c, b);
+      }),
+    );
+  });
 });
