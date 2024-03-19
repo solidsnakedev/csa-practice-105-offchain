@@ -34,20 +34,17 @@ console.log(utxo);
 const asset: Assets = {
   lovelace: 5_000_000n,
 };
-const userAddr = "addr_test1qp4cgm42esrud5njskhsr6uc28s6ljah0phsdqe7qmh3rfuyjgq5wwsca5camufxavmtnm8f6ywga3de3jkgmkwzma4sqv284l";
+const userAddr =
+  "addr_test1qp4cgm42esrud5njskhsr6uc28s6ljah0phsdqe7qmh3rfuyjgq5wwsca5camufxavmtnm8f6ywga3de3jkgmkwzma4sqv284l";
 
-const tx = await lucid.newTx().payToAddress(userAddr, asset).complete();
-
-// console.log(tx.txComplete.to_json())
-
-const signedTx = await tx.sign().complete()
-
-// console.log(signedTx.txSigned.to_json())
-// console.log(signedTx.toString())
-
-const txHash = await signedTx.submit()
-console.log(txHash)
-
+try {
+  const tx = await lucid.newTx().payToAddress(userAddr, asset).complete();
+  const signedTx = await tx.sign().complete();
+  const txHash = await signedTx.submit();
+  console.log(txHash);
+} catch (error) {
+  console.log(error);
+}
 
 // {
 //   "body": {
@@ -111,7 +108,6 @@ console.log(txHash)
 //   "is_valid": true,
 //   "auxiliary_data": null
 // }
-
 
 // {
 //   "body": {

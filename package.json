@@ -2,11 +2,16 @@
   "name": "csa-practice-105-offchain",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "test": "vitest run",
-    "build": "tsc"
+    "build": "tsc",
+    "build-tsup" : "tsup src/index.ts --format esm,cjs --dts --clean"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +19,7 @@
   "devDependencies": {
     "@types/node": "^20.11.24",
     "fast-check": "^3.16.0",
+    "tsup": "^8.0.2",
     "tsx": "^4.7.1",
     "typescript": "^5.3.3",
     "vitest": "0.34.6"

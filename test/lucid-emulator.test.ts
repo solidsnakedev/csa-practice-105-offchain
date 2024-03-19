@@ -14,7 +14,7 @@ import {
 import { MarketRedeemer, SimpleSale } from "../src/contract-schema.js";
 import { fromAddress, toAddress } from "../src/utils.js";
 import script from "./marketplace.json";
-import { Constr } from "@anastasia-labs/lucid-cardano-fork";
+import {lockNFT} from "../src/index.js"
 
 test("adds 1 + 2 to equal 3", () => {
   expect(sum(1, 2)).toBe(3);
@@ -55,13 +55,36 @@ test("Alice sells NFT, Bob buys NFT", async () => {
   lucid.selectWalletFromSeed(user2.seedPhrase);
   console.log(await lucid.wallet.getUtxos());
 
-  const tx = await lucid
-    .newTx()
-    .payToAddress(user1.address, { lovelace: 5_000_000n, [unit]: 5n })
-    .complete();
-  const signedTx = await tx.sign().complete();
-  const txHash = await signedTx.submit();
-  console.log(txHash);
+  // select the user
+  lucid.selectWalletFromSeed(user1.seedPhrase);
+  // user builds tx
+  const unsignedLockNFTTx = await lockNFT()
+  if (unsignedLockNFTTx instanceof Error) {
+    console.log(unsignedLockNFTTx)
+  }
+ else {
+  // user signs tx
+  const signedLockNFTTx = await unsignedLockNFTTx.sign().complete()
+  // user submits tx
+  const signedLockNFTTxHash = await signedLockNFTTx.submit()
+
+  }
+
+  try {
+    // Code that might throw an error
+    const tx = await lucid
+      .newTx()
+      .payToAddress(user1.address, { lovelace: 5_000_000n, [unit]: 5n })
+      .complete();
+    const signedTx = await tx.sign().complete();
+    const txHash = await signedTx.submit();
+    console.log(txHash);
+  } catch (error) {
+    // Handle the error, if returning the error in a function
+    // if (error instanceof Error) return error;
+    // return new Error(`${JSON.stringify(error)}`);
+    console.log(error)
+  }
 
   emulator.awaitBlock(10);
 
@@ -183,31 +206,31 @@ test("Alice sell, Alice Withdraw", () => {
 
 test("property test", () => {
   // console.log(fc.bigIntN(2));
-  console.log(fc.bigInt())
+  console.log(fc.bigInt());
 });
 
 // Code under test
 const contains = (text, pattern) => text.indexOf(pattern) >= 0;
 
 // Properties
-describe('properties', () => {
+describe("properties", () => {
   // string text always contains itself
-  it('should always contain itself', () => {
+  it("should always contain itself", () => {
     fc.assert(
       fc.property(fc.string(), (text) => {
         return contains(text, text);
-      }),
+      })
     );
   });
 
   // string a + b + c always contains b, whatever the values of a, b and c
-  it('should always contain its substrings', () => {
+  it("should always contain its substrings", () => {
     fc.assert(
       fc.property(fc.string(), fc.string(), fc.string(), (a, b, c) => {
-        console.log(a, " - ",b," - ",c)
+        console.log(a, " - ", b, " - ", c);
         // Alternatively: no return statement and direct usage of expect or assert
         return contains(a + b + c, b);
-      }),
+      })
     );
   });
 });
