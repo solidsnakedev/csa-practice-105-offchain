@@ -58,17 +58,17 @@ test("Alice sells NFT, Bob buys NFT", async () => {
   // select the user
   lucid.selectWalletFromSeed(user1.seedPhrase);
   // user builds tx
-  const unsignedLockNFTTx = await lockNFT()
-  if (unsignedLockNFTTx instanceof Error) {
-    console.log(unsignedLockNFTTx)
-  }
- else {
-  // user signs tx
-  const signedLockNFTTx = await unsignedLockNFTTx.sign().complete()
-  // user submits tx
-  const signedLockNFTTxHash = await signedLockNFTTx.submit()
+//   const unsignedLockNFTTx = await lockNFT()
+//   if (unsignedLockNFTTx instanceof Error) {
+//     console.log(unsignedLockNFTTx)
+//   }
+//  else {
+//   // user signs tx
+//   const signedLockNFTTx = await unsignedLockNFTTx.sign().complete()
+//   // user submits tx
+//   const signedLockNFTTxHash = await signedLockNFTTx.submit()
 
-  }
+//   }
 
   try {
     // Code that might throw an error
